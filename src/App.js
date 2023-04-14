@@ -1,33 +1,94 @@
+import { useState, useEffect } from 'react';
 import './App.css';
 import List from './components/List';
-import db from './db_mock.json';
+import AddListForm from './components/AddListForm';
 
 function App() {
-    const { lists, tasks } = db;
+    const [lists, setLists] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showForm, setShowForm] = useState(false);
 
-    function getListTasks(listId) {
-        return tasks.filter(task => task.listId === listId)
+    useEffect(() => {
+        const getLists = async () => {
+            const listsFromServer = await fetchLists();
+            setLists(listsFromServer);
+            setLoading(false);
+        }
+
+        if(loading) {
+            getLists();
+        }
+
+    }, [ loading ])
+
+    const fetchLists = async () => {
+        const res = await fetch('http://localhost:5000/lists?_embed=tasks')
+        const data = await res.json()
+
+        return data
     }
 
-    function handleNewList() {
+    const saveList = async (list) => {
+        await fetch('http://localhost:5000/lists', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(list)
+        })
+
+        setLoading(true);
+    }
+
+    const editList = async (id, title) => {
+        await fetch(`http://localhost:5000/lists/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({title})
+        })
+
+        setLoading(true);
+    }
+
+    const deleteList = async (id) => {
+        if(window.confirm('Eliminar lista? Esta acción no tiene vuelta atrás')) {
+                const res = await fetch(`http://localhost:5000/lists/${id}`, {
+                method: 'DELETE',
+            })
+
+            if(!res.status === 200) alert('Error eliminando lista')
+        }
+
+        setLoading(true);
+
+    }
+
+    function handleAddListForm() {
         // Mostrar form de creacion de nueva lista
-        console.log('handleNewList -> revisar comentarios...')
+        setShowForm(!showForm);
     }
 
     return (
         <div className="App">
             <>
                 {lists.map((list) => (
-                    <List key={list.id} list={list} tasks={getListTasks(list.id)}/>
+                    <List key={list.id} list={list} editList={editList} deleteList={deleteList} />
                 ))}
             </>
             <div className='new-list-card'>
-                <button className="btn-new-list" onClick={handleNewList}>
-                    <span className="material-symbols-outlined">
-                        add
-                    </span>
-                    Agregar nueva lista
-                </button>
+                { !showForm ?
+                                <button className="btn-new-list" onClick={handleAddListForm}>
+                                    <span className="material-symbols-outlined">
+                                        add
+                                    </span>
+                                    Agregar nueva lista
+                                </button>
+                            :
+                                <AddListForm handleAddListForm={handleAddListForm} saveList={saveList}/>
+                }
+                
             </div>
         </div>
     );

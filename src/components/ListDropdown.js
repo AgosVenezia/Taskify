@@ -1,11 +1,13 @@
-const Dropdown = ({ listId, show }) => {
+const Dropdown = ({ list, show, handleDropdown, handleEditListForm, deleteList }) => {
     function handleEdit() {
-        // Mostrar formulario de edicion de lista
-        console.log('edit list -> ', listId);
+        // Ocultar dropdown y mostrar formulario de edicion de lista
+        handleDropdown();
+        handleEditListForm();
     }
     function handleDelete() {
-        // Mostrar alerta/modal de confirmacion 
-        console.log('delete list -> ', listId);
+        // Ocultar dropdown y eliminar lista
+        handleDropdown();
+        deleteList(list.id);
     }    
 
     if(show) {

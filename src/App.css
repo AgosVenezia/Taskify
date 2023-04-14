@@ -6,6 +6,12 @@
     font-family: 'Archivo', sans-serif;
 }
 
+form {
+    font-size: .85rem;
+    border-radius: 5pt;
+    padding: .8rem 1.2rem;
+}
+
 input, button {
     all: unset;
 }
@@ -76,6 +82,11 @@ button {
     overflow-wrap: break-word;
 }
 
+.list-dropdown-container {
+    position: absolute;
+    width: 90%;
+}
+
 .list-actions-dropdown {
     position: absolute;
     display: flex;
@@ -124,6 +135,55 @@ button {
     margin-right: 8pt;
 }
 
+.add-list-form {
+    background-color: var(--md-ref-palette-primary99);
+}
+
+.add-list-form input {
+    margin: 4pt 0;
+    width: 100%;
+    border-bottom: 2px solid var(--md-sys-color-outline-light);
+}
+
+.form-btns {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 12pt;
+}
+
+.edit-list-form {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 8pt 0;
+    margin: 2pt 0;
+}
+
+.edit-list-form > input {
+    max-width: 70%;
+    margin-right: auto;
+    padding: 4pt 2pt;
+    border-bottom: 2px solid var(--md-ref-palette-primary50);
+    background-color: #fff;
+    font-size: var(--md-sys-typescale-headline-small-font-size);
+    line-height: var(--md-sys-typescale-headline-small-line-height);
+}
+
+.edit-list-form > .btn-confirm-edit,
+.edit-list-form > .btn-cancel-edit {
+    display: flex;
+    align-items: center;
+}
+
+.edit-list-form span {
+    font-size: 20px;
+}
+
+.edit-list-form > .btn-confirm-edit {
+    margin-right: 4pt;
+}
+
 .btn-new-task {
     font-family: var(--md-sys-typescale-label-large-font-family-name);
     font-style: var(--md-sys-typescale-label-large-font-family-style);
@@ -132,6 +192,7 @@ button {
     line-height: var(--md-sys-typescale-label-large-line-height);
     letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
     color: var(--md-sys-color-on-primary-container-light);
+    transition: all .2s ease-out;
 }
 
 .btn-new-task > span {
@@ -140,6 +201,10 @@ button {
     border-radius: 100%;
     padding: 4pt;
     margin-right: 8pt;
+}
+
+.btn-new-task:hover > span {
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .25);
 }
 
 .task-card {
