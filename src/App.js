@@ -65,6 +65,43 @@ function App() {
 
     }
 
+    const saveTask = async (task) => {
+        await fetch('http://localhost:5000/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        })
+
+        setLoading(true);
+    }
+
+    const editTask = async (task) => {
+        await fetch(`http://localhost:5000/tasks/${task.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        })
+
+        setLoading(true);
+    }
+
+    const deleteTask = async (id) => {
+        if(window.confirm('Eliminar tarea? Esta acción no tiene vuelta atrás')) {
+                const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+                method: 'DELETE',
+            })
+
+            if(!res.status === 200) alert('Error eliminando tarea')
+        }
+
+        setLoading(true);
+
+    }
+
     function handleAddListForm() {
         // Mostrar form de creacion de nueva lista
         setShowForm(!showForm);
@@ -74,7 +111,7 @@ function App() {
         <div className="App">
             <>
                 {lists.map((list) => (
-                    <List key={list.id} list={list} editList={editList} deleteList={deleteList} />
+                    <List key={list.id} list={list} editList={editList} deleteList={deleteList} saveTask={saveTask} editTask={editTask} deleteTask={deleteTask}/>
                 ))}
             </>
             <div className='new-list-card'>

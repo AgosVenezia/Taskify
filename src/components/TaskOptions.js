@@ -1,12 +1,12 @@
-const TaskOptions = ({taskId}) => {
+const TaskOptions = ({taskId, handleEditTaskForm, deleteTask}) => {
     function handleEdit(){
         // Mostrar formulario de edicion de tarea
-        console.log('edit task -> ', taskId)
+        handleEditTaskForm();
     }
 
     function handleDelete(){
         // Mostrar alerta/modal de confirmacion
-        console.log('delete task -> ', taskId)
+        deleteTask(taskId);
     }
 
     return (

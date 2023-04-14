@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import Dropdown from "./ListDropdown";
 import EditListForm from "./EditListForm";
+import AddTaskForm from "./AddTaskForm";
 import Task from "./Task";
 
-function List({list, editList, deleteList}) {
+function List({list, editList, deleteList, saveTask, editTask, deleteTask}) {
     const [optionsDropdown, setOptionsDropdown] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [showTaskForm, setShowTaskForm] = useState(false);
 
     useEffect(() => {
         const getTasks = () => {
@@ -28,6 +30,7 @@ function List({list, editList, deleteList}) {
     function handleNewTaskForm() {
         // Mostrar formulario de creacion de tarea
         console.log("handleNewTaskForm -> lee los comentarios...")
+        setShowTaskForm(!showTaskForm);
     }
 
     return (
@@ -56,16 +59,21 @@ function List({list, editList, deleteList}) {
             <div className="list-card-content">
                 <>
                     {tasks.map((task) => (
-                        <Task key={task.id} task={task}/>
+                        <Task key={task.id} task={task} editTask={editTask} deleteTask={deleteTask} />
                     ))}
                 </>
             </div>
             
             <div className="list-card-footer">
-                <button className="btn-new-task" onClick={handleNewTaskForm}>
-                    <span className="material-symbols-outlined">add</span>
-                    Agregar nueva tarea
-                </button>
+                { !showTaskForm ?
+                                    <button className="btn-new-task" onClick={handleNewTaskForm}>
+                                        <span className="material-symbols-outlined">add</span>
+                                        Agregar nueva tarea
+                                    </button>
+                                :
+                                    <AddTaskForm listId={list.id} handleNewTaskForm={handleNewTaskForm} saveTask={saveTask} />
+                }
+                
             </div>
 
         </div>
