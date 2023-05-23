@@ -10,14 +10,8 @@ function App() {
 
     useEffect(() => {
         const getLists = async () => {
-            const url = '/.netlify/functions/get-lists'
-
-            try {
-                const response = await fetch(url).then((res) => res.json());
-                setLists(response);
-            } catch (err) {
-                alert(err);
-            }
+            const listsFromSv = await fetchLists();
+            setLists(listsFromSv);
         }
 
         loading === true && getLists();
@@ -27,6 +21,17 @@ function App() {
         }
 
     }, [ loading ]);
+
+    const fetchLists = async () => {
+        const url = '/.netlify/functions/get-lists'
+
+        try {
+            const response = await fetch(url).then((res) => res.json());
+            return response;
+        } catch (err) {
+            alert(err);
+        }
+    }
 
     const insertList = async (title) => {
         const url = `/.netlify/functions/insert-list?title=${title}`;
