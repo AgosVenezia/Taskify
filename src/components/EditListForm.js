@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const EditListForm = ({ list, handleEditListForm, editList }) => {
+const EditListForm = ({ list, handleEditListForm, updateList }) => {
     const [title, setTitle] = useState(list.title);
 
     const onSubmit = (e) => {
@@ -11,7 +11,7 @@ const EditListForm = ({ list, handleEditListForm, editList }) => {
             return
         }
 
-        editList(list.id, title);
+        updateList(list._id, title);
 
         handleEditListForm();
     } 

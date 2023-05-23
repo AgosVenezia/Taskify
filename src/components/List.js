@@ -4,78 +4,107 @@ import EditListForm from "./EditListForm";
 import AddTaskForm from "./AddTaskForm";
 import Task from "./Task";
 
-function List({list, editList, deleteList, saveTask, editTask, deleteTask}) {
+function List({ list, handleAppLoading }) {
     const [optionsDropdown, setOptionsDropdown] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showTaskForm, setShowTaskForm] = useState(false);
 
     useEffect(() => {
-        const getTasks = () => {
-            setTasks(list.tasks)
+        const getTasks = async () => {
+            const url = `/.netlify/functions/get-tasks?listId=${list._id}`;
+    
+            try {
+                const response = await fetch(url).then((res) => res.json());
+                setTasks(response);
+            } catch (err) {
+                alert(err);
+            }
         }
 
-        getTasks(); 
+        if(loading === true) getTasks();
 
-    }, [ list ])
+        return () => {
+            setLoading(false);
+        }
 
-    function handleDropdown() {
+    }, [ loading ]);
+
+    const updateList = async (id, title) => {
+        const url = `/.netlify/functions/update-list?id=${id}&title=${title}`;
+
+        try {
+            const response = await fetch(url).then((res) => res.json());
+            handleAppLoading(true);
+        } catch (err) {
+            alert(err);
+        }
+    }
+
+    const handleDropdown = () => {
+        // Mostrar/ocultar dropdown de opciones de lista
         setOptionsDropdown(!optionsDropdown);
     }
 
-    function handleEditListForm() {
+    const handleEditListForm = () => {
+        // Mostrar/ocultar formulario de edición de lista
         setEditMode(!editMode);
     }
 
-    function handleNewTaskForm() {
-        // Mostrar formulario de creacion de tarea
-        console.log("handleNewTaskForm -> lee los comentarios...")
+    const handleNewTaskForm = () => {
+        // Mostrar/ocultar formulario de creacion de tarea
         setShowTaskForm(!showTaskForm);
     }
+
+    const handleListLoading = (loadingState) => setLoading(loadingState);
 
     return (
         <div className="list-card">
             <div className="list-card-header">
-                { !editMode ?
-                                <>
-                                    <h2 className="list-card-title">{list.title.toUpperCase()}</h2>
-                                    <button className="list-actions-btns" onClick={handleDropdown}>
-                                        <span className="material-symbols-outlined">
-                                            more_vert
-                                        </span>
-                                    </button>
-                                </>
-                            :
-                                <EditListForm list={list} handleEditListForm={handleEditListForm} editList={editList} />
-
+                {
+                    !editMode
+                        ?   <>
+                                <h2 className="list-card-title">{list.title.toUpperCase()}</h2>
+                                <button className="list-actions-btns" onClick={handleDropdown}>
+                                    <span className="material-symbols-outlined">
+                                        more_vert
+                                    </span>
+                                </button>
+                            </>
+                        :   <EditListForm list={list} handleEditListForm={handleEditListForm} updateList={updateList} />
                 }
-                
-
             </div>
-            <div className="list-dropdown-container">
-                <Dropdown list={list} show={optionsDropdown} handleDropdown={handleDropdown} handleEditListForm={handleEditListForm} deleteList={deleteList}/>
-            </div>
+            
+            {
+                optionsDropdown && 
+                    <div className="list-dropdown-container">
+                        <Dropdown listId={list._id} handleDropdown={handleDropdown} handleEditListForm={handleEditListForm} handleAppLoading={handleAppLoading} />
+                    </div>
+            }
 
             <div className="list-card-content">
                 <>
-                    {tasks.map((task) => (
-                        <Task key={task.id} task={task} editTask={editTask} deleteTask={deleteTask} />
-                    ))}
+                    {
+                        tasks.length > 0
+                            ?   tasks.map(task => (
+                                    <Task key={task._id} listId={list._id} task={task} handleListLoading={handleListLoading} />
+                                ))
+                            :   <p>No hay tareas...</p>
+                    }
                 </>
             </div>
             
             <div className="list-card-footer">
-                { !showTaskForm ?
-                                    <button className="btn-new-task" onClick={handleNewTaskForm}>
-                                        <span className="material-symbols-outlined">add</span>
-                                        Agregar nueva tarea
-                                    </button>
-                                :
-                                    <AddTaskForm listId={list.id} handleNewTaskForm={handleNewTaskForm} saveTask={saveTask} />
+                {
+                    !showTaskForm
+                        ?   <button className="btn-new-task" onClick={handleNewTaskForm}>
+                                <span className="material-symbols-outlined">add</span>
+                                Agregar nueva tarea
+                            </button>
+                        :   <AddTaskForm listId={list._id} handleNewTaskForm={handleNewTaskForm} handleListLoading={handleListLoading} />
                 }
-                
             </div>
-
         </div>
     )
 };

@@ -1,16 +1,28 @@
 import { useState } from "react";
 
-const AddTaskForm = ({listId, handleNewTaskForm, saveTask}) => {
+const AddTaskForm = ({listId, handleNewTaskForm, handleListLoading}) => {
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [label, setLabel] = useState('');
+
+    const insertTask = async (task) => {
+        const params = new URLSearchParams(task)
+        const url = `/.netlify/functions/insert-task?${params}`;
+
+        try {
+            const response = await fetch(url).then((res) => res.json());
+            handleListLoading(true);
+        } catch (err) {
+            alert(err);
+        }
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
 
         handleNewTaskForm();
 
-        saveTask({listId, title, text, label})
+        insertTask({listId, title, text, label})
     }
 
     const onReset = () => {

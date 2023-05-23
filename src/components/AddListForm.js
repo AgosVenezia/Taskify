@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const AddListForm = ({ handleAddListForm, saveList }) => {
+const AddListForm = ({ handleAddListForm, insertList }) => {
     const [title, setTitle] = useState('')
 
     const onSubmit = (e) => {
@@ -11,7 +11,7 @@ const AddListForm = ({ handleAddListForm, saveList }) => {
             return
         }
 
-        saveList({title});
+        insertList(title);
 
         handleAddListForm();
         setTitle('');
