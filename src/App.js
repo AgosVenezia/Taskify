@@ -12,13 +12,10 @@ function App() {
         const getLists = async () => {
             const listsFromSv = await fetchLists();
             setLists(listsFromSv);
+            setLoading(false);
         }
 
         loading === true && getLists();
-
-        return () => {
-            setLoading(false)
-        }
 
     }, [ loading ]);
 
