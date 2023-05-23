@@ -28,14 +28,14 @@ function List({ list, handleAppLoading }) {
         return () => {
             setLoading(false);
         }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ loading ]);
 
     const updateList = async (id, title) => {
         const url = `/.netlify/functions/update-list?id=${id}&title=${title}`;
 
         try {
-            const response = await fetch(url).then((res) => res.json());
+            await fetch(url).then((res) => res.json());
             handleAppLoading(true);
         } catch (err) {
             alert(err);

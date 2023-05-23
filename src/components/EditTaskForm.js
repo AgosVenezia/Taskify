@@ -10,7 +10,7 @@ const EditTaskForm = ({task, handleEditTaskForm, handleListLoading}) => {
         const url = `/.netlify/functions/update-task?${params}`;
 
         try {
-            const response = await fetch(url).then((res) => res.json());
+            await fetch(url).then((res) => res.json());
             handleListLoading(true);
         } catch (err) {
             alert(err);

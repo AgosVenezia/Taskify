@@ -10,7 +10,7 @@ const TaskOptions = ({taskId, handleEditTaskForm, handleListLoading}) => {
         
         if(window.confirm('Eliminar tarea? Esta acción no tiene vuelta atrás')) {
             try {
-                const response = await fetch(url).then((res) => res.json());
+                await fetch(url).then((res) => res.json());
                 handleListLoading(true);
             } catch (err) {
                 alert(err);

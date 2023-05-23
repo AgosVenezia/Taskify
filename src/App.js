@@ -32,7 +32,7 @@ function App() {
         const url = `/.netlify/functions/insert-list?title=${title}`;
 
         try {
-            const response = await fetch(url).then((res) => res.json());
+            await fetch(url).then((res) => res.json());
             setLoading(true);
         } catch (err) {
             alert(err);
@@ -51,7 +51,7 @@ function App() {
     return (
         <div className="App">
             {  
-                 loading === true
+                loading === true
                     ?   <h1>Cargando...</h1>
                     :   lists.map((list) => <List key={list._id} list={list} handleAppLoading={handleAppLoading} />)  
             }
