@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import Dropdown from "./ListDropdown";
+import { Modal, Card, Dropdown, Button } from "flowbite-react";
+import { MdEdit, MdDeleteForever, MdAddTask, MdDangerous } from "react-icons/md";
 import EditListForm from "./EditListForm";
 import AddTaskForm from "./AddTaskForm";
 import Task from "./Task";
 
 function List({ list, handleAppLoading }) {
-    const [optionsDropdown, setOptionsDropdown] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showTaskForm, setShowTaskForm] = useState(false);
@@ -42,9 +43,17 @@ function List({ list, handleAppLoading }) {
         }
     }
 
-    const handleDropdown = () => {
-        // Mostrar/ocultar dropdown de opciones de lista
-        setOptionsDropdown(!optionsDropdown);
+    const deleteList = async () => {
+        const url = `/.netlify/functions/delete-list?id=${list._id}`;
+
+        try {
+            const response = await fetch(url).then((res) => res.json());
+            return response;
+        } catch (err) {
+            alert(err);
+        } finally {
+            handleAppLoading(true);
+        }
     }
 
     const handleEditListForm = () => {
@@ -60,52 +69,91 @@ function List({ list, handleAppLoading }) {
     const handleListLoading = (loadingState) => setLoading(loadingState);
 
     return (
-        <div className="list-card">
-            <div className="list-card-header">
-                {
-                    !editMode
-                        ?   <>
-                                <h2 className="list-card-title">{list.title.toUpperCase()}</h2>
-                                <button className="list-actions-btns" onClick={handleDropdown}>
-                                    <span className="material-symbols-outlined">
-                                        more_vert
-                                    </span>
-                                </button>
-                            </>
-                        :   <EditListForm list={list} handleEditListForm={handleEditListForm} updateList={updateList} />
-                }
-            </div>
-            
-            {
-                optionsDropdown && 
-                    <div className="list-dropdown-container">
-                        <Dropdown listId={list._id} handleDropdown={handleDropdown} handleEditListForm={handleEditListForm} handleAppLoading={handleAppLoading} />
+        <>
+            <Modal
+                show={showDeleteModal}
+                size="md"
+                popup={true}
+                onClose={e => setShowDeleteModal(false)}
+            >
+                <Modal.Header />
+                <Modal.Body>
+                    <div className="text-center">
+                        <MdDangerous className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            Eliminar {list.title}? Esta acción no tiene vuelta atrás
+                        </h3>
+                        <div className="flex justify-center gap-4">
+                            <Button
+                                color="failure"
+                                onClick={deleteList}
+                            >
+                                Sí, seguro
+                            </Button>
+                            <Button
+                                color="dark"
+                                onClick={e => setShowDeleteModal(false)}
+                            >
+                                No, cancelar
+                            </Button>
+                        </div>
                     </div>
-            }
+                </Modal.Body>
+            </Modal>
+        
+            <div className="max-w-sm mx-4">
+                <Card>
+                    <div className="mb-4 flex items-center justify-between">
+                        { !editMode
+                            ?   <>
+                                    <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                                        {list.title}
+                                    </h5>
+                                    <Dropdown inline={true} >
+                                        <Dropdown.Item onClick={e => setEditMode(true)}>
+                                            <MdEdit />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={e => setShowDeleteModal(true)}>
+                                            <MdDeleteForever />
+                                        </Dropdown.Item>
+                                    </Dropdown>
+                                </>
+                            :   <EditListForm
+                                    list={list}
+                                    handleEditListForm={handleEditListForm}
+                                    updateList={updateList} 
+                                />
+                        }
+                    </div>
 
-            <div className="list-card-content">
-                <>
-                    {
-                        tasks.length > 0
+                    <div className="flow-root">
+                        { tasks.length > 0
                             ?   tasks.map(task => (
                                     <Task key={task._id} listId={list._id} task={task} handleListLoading={handleListLoading} />
                                 ))
                             :   <p>No hay tareas...</p>
-                    }
-                </>
-            </div>
-            
-            <div className="list-card-footer">
-                {
-                    !showTaskForm
-                        ?   <button className="btn-new-task" onClick={handleNewTaskForm}>
-                                <span className="material-symbols-outlined">add</span>
-                                Agregar nueva tarea
-                            </button>
+                        }
+                    </div>
+
+                    { !showTaskForm
+                        ?   <div>
+                                <Button
+                                    className="w-full"
+                                    size="sm"
+                                    outline={true}
+                                    gradientDuoTone="greenToBlue"
+                                    onClick={handleNewTaskForm}
+                                >
+                                    <MdAddTask className="mr-2"/>
+                                    Agregar nueva tarea
+                                </Button>
+                            </div>   
                         :   <AddTaskForm listId={list._id} handleNewTaskForm={handleNewTaskForm} handleListLoading={handleListLoading} />
-                }
+                    }
+
+                </Card>
             </div>
-        </div>
+        </>
     )
 };
 

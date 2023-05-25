@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Label, Select, TextInput, Textarea, Button } from "flowbite-react";
+import { MdSend, MdCancel } from "react-icons/md";
 
 const EditTaskForm = ({task, handleEditTaskForm, handleListLoading}) => {
     const [title, setTitle] = useState(task.title);
@@ -28,18 +30,68 @@ const EditTaskForm = ({task, handleEditTaskForm, handleListLoading}) => {
     }
 
     return (
-        <form className="new-task-form" onSubmit={onSubmit} onReset={onReset}>
-            <input type="text" name="title" value={title} onChange={e => setTitle(e.target.value)}/>
-            <input type="text" name="text" value={text} onChange={e => setText(e.target.value)}/>
-            <select name="label" id="label-select" value={label} onChange={e => setLabel(e.target.value)}>
-                <option value="">Etiqueta:</option>
-                <option value="green">Tranqui</option>
-                <option value="yellow">Metele</option>
-                <option value="red">Para ayer</option>
-            </select>
-            <div className="form-btns">
-                <button className="btn-add-task" type="submit">Guardar</button>
-                <button className="btn-clear-task-form" type="reset">Volver</button>
+        <form className="flex flex-col gap-4" onSubmit={onSubmit} onReset={onReset}>
+            <div id="select">
+                <div className="mb-2 block">
+                    <Label
+                        htmlFor="label"
+                        value="Urgencia"
+                    />
+                </div>
+                <Select
+                    sizing="sm"
+                    id="label"
+                    required={true}
+                    value={label}
+                    onChange={e => setLabel(e.target.value)}
+                >
+                    <option value="green">Chill</option>
+                    <option value="yellow">Warning</option>
+                    <option value="red">Urgent</option>
+                </Select>
+                </div>
+            <div>
+                <div className="mb-2 block">
+                    <Label
+                        htmlFor="title"
+                        value="Título"
+                    />
+                </div>
+                    <TextInput
+                        id="title"
+                        type="text"
+                        sizing="sm"
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                    />
+            </div>
+            <div id="textarea">
+                <div className="mb-2 block">
+                    <Label
+                        htmlFor="text"
+                        value="Descripción"
+                    />
+                </div>
+                <Textarea
+                    className="text-xs"
+                    id="text"
+                    placeholder="Descripción..."
+                    required={true}
+                    rows={4}
+                    value={text}
+                    onChange={e => setText(e.target.value)}
+                />
+            </div>
+            
+            <div className="flex items-center justify-between gap-2 w-full">
+                <Button type="submit" size="sm" gradientMonochrome="success">
+                    <MdSend className="mr-2" />
+                    Guardar
+                </Button>
+                <Button type="reset" size="sm" gradientMonochrome="failure">
+                    <MdCancel className="mr-2" />
+                    Cancelar
+                </Button>
             </div>
         </form>
     )

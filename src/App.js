@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import './App.css';
+import { Spinner, Card, Button } from 'flowbite-react';
+import { MdPlaylistAdd } from 'react-icons/md';
+import Header from './components/Header';
 import List from './components/List';
 import AddListForm from './components/AddListForm';
 
@@ -16,7 +18,8 @@ function App() {
         }
 
         loading === true && getLists();
-
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ loading ]);
 
     const fetchLists = async () => {
@@ -25,17 +28,6 @@ function App() {
         try {
             const response = await fetch(url).then((res) => res.json());
             return response;
-        } catch (err) {
-            alert(err);
-        }
-    }
-
-    const insertList = async (title) => {
-        const url = `/.netlify/functions/insert-list?title=${title}`;
-
-        try {
-            await fetch(url).then((res) => res.json());
-            setLoading(true);
         } catch (err) {
             alert(err);
         }
@@ -52,25 +44,41 @@ function App() {
 
     return (
         <div className="App">
-            {  
-                loading === true
-                    ?   <h1>Cargando...</h1>
-                    :   lists.map((list) => <List key={list._id} list={list} handleAppLoading={handleAppLoading} />)  
+            <Header />
+            
+            { loading === true
+                ?   <div className="flex items-center justify-center gap-2 w-full">
+                        <Spinner
+                            className="my-12"
+                            aria-label="Extra large Center-aligned spinner example"
+                            size="xl"
+                        />    
+                    </div>
+                :   <div className="pt-8 flex overflow-x-scroll">
+                        { lists.map((list) => <List key={list._id} list={list} handleAppLoading={handleAppLoading} />) }
+                        <div className="max-w-sm mx-4">
+                            <Card>
+                                { !showForm
+                                    ?   <div>
+                                            <Button
+                                                className="w-full"
+                                                size="sm"
+                                                outline={true}
+                                                gradientDuoTone="purpleToBlue"
+                                                onClick={handleAddListForm}
+                                            >
+                                                <MdPlaylistAdd className="mr-2"/>
+                                                Agregar nueva lista
+                                            </Button>
+                                        </div> 
+                                    :   <AddListForm handleAddListForm={handleAddListForm} handleAppLoading={handleAppLoading} />
+                                }
+                            </Card>
+                        </div>
+                    </div>
             }
-
-            <div className='new-list-card'>
-                {   
-                    !showForm
-                        ?   <button className="btn-new-list" onClick={handleAddListForm}>
-                                <span className="material-symbols-outlined">
-                                    add
-                                </span>
-                                Agregar nueva lista
-                            </button>
-                        :   <AddListForm handleAddListForm={handleAddListForm} insertList={insertList}/>
-                }
-            </div>
         </div>
+            
     );
 }
 

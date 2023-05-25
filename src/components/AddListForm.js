@@ -1,7 +1,20 @@
 import { useState } from "react";
+import { Label, TextInput, Button } from "flowbite-react";
+import { MdSend, MdCancel } from "react-icons/md";
 
-const AddListForm = ({ handleAddListForm, insertList }) => {
+const AddListForm = ({ handleAddListForm, handleAppLoading }) => {
     const [title, setTitle] = useState('')
+
+    const insertList = async (title) => {
+        const url = `/.netlify/functions/insert-list?title=${title}`;
+
+        try {
+            await fetch(url).then((res) => res.json());
+            handleAppLoading(true);
+        } catch (err) {
+            alert(err);
+        }
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -15,7 +28,6 @@ const AddListForm = ({ handleAddListForm, insertList }) => {
 
         handleAddListForm();
         setTitle('');
-
     }
 
     const onReset = () => {
@@ -23,21 +35,28 @@ const AddListForm = ({ handleAddListForm, insertList }) => {
     }
 
     return (
-        <form action="" className="add-list-form" onSubmit={onSubmit} onReset={onReset}>
-            <input type="text" name="list-title" placeholder="Título de lista" onChange={(e) => setTitle(e.target.value)} />
-            <div className="form-btns">
-                <button className="btn-add-list" type="submit">
-                    <span className="material-symbols-outlined">
-                        add
-                    </span>
-                    Agregar
-                </button>
-                <button className="btn-clear-list-form" type="reset">
-                    <span className="material-symbols-outlined">
-                        close
-                    </span>
+        <form className="flex flex-col gap-4" onSubmit={onSubmit} onReset={onReset}>
+                <Label
+                    htmlFor="title"
+                    value="Título"
+                />
+            <TextInput
+                id="title"
+                type="text"
+                sizing="sm"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+            />
+        
+            <div className="flex items-center justify-between gap-2 w-full">
+                <Button type="submit" size="sm" gradientMonochrome="success">
+                    <MdSend className="mr-2" />
+                    Guardar
+                </Button>
+                <Button type="reset" size="sm" gradientMonochrome="failure">
+                    <MdCancel className="mr-2" />
                     Cancelar
-                </button>
+                </Button>
             </div>
         </form>
     )
