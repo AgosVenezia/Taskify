@@ -10,7 +10,7 @@ function Header() {
         >
             <Navbar.Brand href="https://youtu.be/dQw4w9WgXcQ" target="_blank">
                 <img
-                src="img/logoipsum-290.svg"
+                src="img/logorectangular.png"
                 className="mr-3 h-6 sm:h-9"
                 alt="Logo"
                 />
