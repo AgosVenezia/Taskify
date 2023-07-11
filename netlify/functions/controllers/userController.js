@@ -6,9 +6,9 @@ import User from '../models/userModel.js';
 // route   POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { firstName, lastName, username, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ email }) || await User.findOne({ username })
 
   if(userExists) {
     res.status(400);
@@ -16,6 +16,8 @@ const registerUser = asyncHandler(async (req, res) => {
   };
 
   const user = await User.create({
+    firstName,
+    lastName,
     username,
     email,
     password
