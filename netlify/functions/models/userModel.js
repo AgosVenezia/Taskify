@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
-import { tasklistSchema } from "./tasklistModel";
 
 const userSchema = mongoose.Schema(
   {
@@ -25,7 +24,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    tasklists: [ tasklistSchema ],
   },
   {
     timestamps: true,

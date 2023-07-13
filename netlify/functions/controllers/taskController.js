@@ -7,21 +7,20 @@ import User from '../models/userModel';
 // route    POST /api/tasks/
 // @access  Private
 const createTask = asyncHandler(async (req, res) => {
-  const { tasklistId, title, description, pos, label } = req.body;
+  const { tasklistId, title, description, label } = req.body;
 
-  const user = await User.findById(req.user._id);
-  const tasklist = user.tasklists.id(tasklistId);
+  const tasklist = await Tasklist.findById(tasklistId);
 
   const task = new Task({
+    userId: req.user._id,
     title,
     description,
-    pos,
     label
   })
   
   try {
     tasklist.tasks.push(task);
-    await user.save();
+    await tasklist.save();
 
     res.status(201).json({
       _id: task._id,
@@ -30,7 +29,7 @@ const createTask = asyncHandler(async (req, res) => {
       pos: task.pos,
       label: task.label,
       tasklistId: tasklistId,
-      user: user.username,
+      user: req.user.username,
     });
   } catch (err) {
     res.status(500).json({ msg: `Error: ${err}` });
@@ -42,21 +41,21 @@ const createTask = asyncHandler(async (req, res) => {
 // @access  Private
 const editTask = asyncHandler(async(req, res) => {
   const { taskId } = req.params;
-  const { tasklistId, title, description, pos, label } = req.body;
-
-  const user = await User.findById(req.user._id);
-  const task = user.tasklists.id(tasklistId).tasks.id(taskId);
-  // console.log('editTask task -> ', task);
-
-  if (task && (task.ownerDocument() === user)) {
-    task.title = title || task.title;
-    task.description = description || task.description;
-    task.pos = pos || task.pos;
-    task.label = label || task.label;
-  }
+  const { title, description, pos, label, tasklistId } = req.body;
 
   try {
-    await user.save();
+    const tasklist = await Tasklist.findById(tasklistId);
+    const task = tasklist.tasks.id(taskId);
+    
+    if (task) {
+      task.title = title || task.title;
+      task.description = description || task.description;
+      task.pos = pos || task.pos;
+      task.label = label || task.label;
+    }
+
+    tasklist.save();
+
     res.status(201).json({
       _id: task._id,
       title: task.title,
@@ -64,7 +63,7 @@ const editTask = asyncHandler(async(req, res) => {
       pos: task.pos,
       label: task.label,
       tasklistId: tasklistId,
-      user: user.username,
+      user: req.user.username,
     });
   } catch (err) {
     res.status(500).json({ msg: `Error: ${err}` });
@@ -72,19 +71,18 @@ const editTask = asyncHandler(async(req, res) => {
 });
 
 // @desc    Eliminar tarea
-// route    DELETE /api/tasks/:taskId
+// route    DELETE /api/tasks/:tasklistId.:taskId
 // @access  Private
 const deleteTask = asyncHandler(async(req, res) => {
-  const { taskId } = req.params;
-  const { tasklistId } = req.body;
-
-  const user = await User.findById(req.user._id);
-  const tasklist = user.tasklists.id(tasklistId);
+  const { tasklistId, taskId } = req.params;
 
   try {
-    const task = tasklist.tasks.id(taskId);
+    const tasklist = await Tasklist.findById(tasklistId)
+    const task = tasklist.tasks.id(taskId)
     task.deleteOne();
-    await user.save();
+
+    await tasklist.save();
+
     res.status(201).json({
       msg: `Tarea ${task.title} eliminada.`
     })

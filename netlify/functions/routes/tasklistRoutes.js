@@ -1,10 +1,13 @@
 import express from 'express';
-import { createTasklist, editTasklist, deleteTasklist } from '../controllers/tasklistController';
+import { getTasklists, createTasklist, editTasklist, deleteTasklist } from '../controllers/tasklistController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-router.post('/', protect, createTasklist);
+router
+  .route('/')
+  .get(protect, getTasklists)
+  .post(protect, createTasklist);
 router
   .route('/:tasklistId')
   .put(protect, editTasklist)

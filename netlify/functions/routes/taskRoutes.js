@@ -8,6 +8,6 @@ router.post('/', protect, createTask);
 router
   .route('/:taskId')
   .put(protect, editTask)
-  .delete(protect, deleteTask);
+router.delete('/:tasklistId.:taskId', protect, deleteTask);
 
 export default router;
