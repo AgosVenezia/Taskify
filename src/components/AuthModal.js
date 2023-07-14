@@ -15,12 +15,8 @@ const SignInForm = ({ handleForm, handleModal }) => {
       password: formData.get("password"),
     }
 
-    try {
-      await loginUser(data);
-      handleModal();      
-    } catch (err) {
-      alert(err);
-    }
+    await loginUser(data);
+    handleModal();      
   };
 
   return (

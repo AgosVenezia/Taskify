@@ -11,11 +11,11 @@ const useBoardContext = () => {
     loading,
     setLoading,
     getTasklists: async () => {
-      await axios
+      return await axios
         .get("/api/tasklists")
         .then((res) => setTasklists(res.data))
         .then(() => setLoading(false))
-        .catch((err) => alert("err -> ", err));
+        .catch((err) => err);
     },
   };
 };

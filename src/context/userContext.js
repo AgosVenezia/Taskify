@@ -23,24 +23,24 @@ const useUserContext = () => {
   return {
     userInfo,
     register: async (data) => {
-      await axios
+      return axios
         .post("/api/users", data)
         .then((res) => res.data)
         .then((data) => setCredentials(data))
-        .catch((err) => alert(err));
+        .catch((err) => err);
     },
     login: async (data) => {
-      await axios
+      return axios
         .post("/api/users/auth", data)
         .then((res) => res.data)
         .then((data) => setCredentials(data))
-        .catch((err) => alert(err));
+        .catch((err) => err);
     },
     logout: async () => {
-      await axios
+      return axios
         .post("/api/users/logout")
         .then(() => clearCredentials())
-        .catch((err) => alert(err));
+        .catch((err) => err);
     }
   };
 };
