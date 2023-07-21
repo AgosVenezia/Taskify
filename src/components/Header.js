@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserInfo, useLogout } from '../context/userContext';
 import {
   Navbar,
@@ -8,6 +8,7 @@ import {
   Button,
   Modal,
 } from "flowbite-react";
+import { MdDashboardCustomize, MdSettings, MdLogout } from 'react-icons/md';
 import AuthModal from './AuthModal';
 
 function Header() {
@@ -16,6 +17,7 @@ function Header() {
   const userInfo = useUserInfo();
   const logoutUser = useLogout();
 
+  const navigate = useNavigate();
   const location = useLocation();
   
   const handleModal = () => {
@@ -52,26 +54,19 @@ function Header() {
                 { `${userInfo.email}`}
                 </span>
               </Dropdown.Header>
-              <Dropdown.Item>Dashboard</Dropdown.Item>
-              <Dropdown.Item>Ajustes</Dropdown.Item>
+              <Dropdown.Item icon={MdDashboardCustomize} onClick={() => navigate("/board")}>
+                Dashboard
+              </Dropdown.Item>
+              <Dropdown.Item icon={MdSettings} onClick={() => navigate("/profile")}>
+                Ajustes
+              </Dropdown.Item>
               <Dropdown.Divider />
-              <Dropdown.Item onClick={() => logoutUser()}>Cerrar sesión</Dropdown.Item>
+              <Dropdown.Item icon={MdLogout} onClick={() => logoutUser()}>Cerrar sesión</Dropdown.Item>
             </Dropdown>
           ) : (
             <Button gradientDuoTone="purpleToBlue" className="font-semibold" onClick={() => setShowModal(true)}>LOG IN</Button>
           )}
-
-          {/* <Navbar.Toggle /> */}
         </div>
-        {/* <Navbar.Collapse>
-          <Navbar.Link href="/navbars" active={true}>
-            Home
-          </Navbar.Link>
-          <Navbar.Link href="/navbars">About</Navbar.Link>
-          <Navbar.Link href="/navbars">Services</Navbar.Link>
-          <Navbar.Link href="/navbars">Pricing</Navbar.Link>
-          <Navbar.Link href="/navbars">Contact</Navbar.Link>
-        </Navbar.Collapse> */}
       </Navbar>
       <Modal show={showModal} size="md" popup dismissible onClose={() => setShowModal(false)}>
           <AuthModal handleModal={handleModal}/>

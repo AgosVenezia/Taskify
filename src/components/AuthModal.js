@@ -16,6 +16,7 @@ const SignInForm = ({ handleForm, handleModal }) => {
     }
 
     await loginUser(data);
+    // console.log('loginFn -> ', loginFn)
     handleModal();      
   };
 
@@ -53,12 +54,12 @@ const SignInForm = ({ handleForm, handleModal }) => {
       </div>
       <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
         No tiene cuenta?&nbsp;
-        <a
+        <span
           className="text-cyan-700 hover:underline dark:text-cyan-500 cursor-pointer"
           onClick={handleForm}
         >
           Regístrate
-        </a>
+        </span>
       </div>
     </form>
   )
@@ -80,12 +81,8 @@ const SignUpForm = ({ handleForm, handleModal }) => {
       password: formData.get("password"),
     }
 
-    try {
-      await registerUser(data);
-      handleModal();      
-    } catch (err) {
-      alert(err);
-    }
+    await registerUser(data);
+    handleModal();      
   };
 
   return (
@@ -140,12 +137,12 @@ const SignUpForm = ({ handleForm, handleModal }) => {
       </div>
       <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
         ¿Ya tienes cuenta?&nbsp;
-        <a
+        <span
           className="text-cyan-700 hover:underline dark:text-cyan-500 cursor-pointer"
           onClick={handleForm}
         >
           ¡Inicia sesión!
-        </a>
+        </span>
       </div>
     </form>
   )

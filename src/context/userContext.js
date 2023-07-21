@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const useUserContext = () => {
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('taskifyUserInfo')));
+
+  const navigate = useNavigate();
 
   const setCredentials = (credentials) => {
     if(localStorage.getItem('taskifyUserInfo')) {
@@ -25,21 +28,30 @@ const useUserContext = () => {
     register: async (data) => {
       return axios
         .post("/api/users", data)
-        .then((res) => res.data)
-        .then((data) => setCredentials(data))
+        .then((res) => {
+          setCredentials(res.data)
+          navigate('/board')
+          return res
+        })
         .catch((err) => err);
     },
     login: async (data) => {
       return axios
         .post("/api/users/auth", data)
-        .then((res) => res.data)
-        .then((data) => setCredentials(data))
+        .then((res) => {
+          setCredentials(res.data)
+          navigate('/board')
+          return res
+        })
         .catch((err) => err);
     },
     logout: async () => {
       return axios
         .post("/api/users/logout")
-        .then(() => clearCredentials())
+        .then((res) => {
+          clearCredentials()
+          return res
+        })
         .catch((err) => err);
     }
   };

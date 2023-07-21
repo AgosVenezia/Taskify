@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import Home from './screens/Home';
 import Board from './screens/Board';
+import Profile from './screens/Profile';
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter(
@@ -12,7 +13,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<Home />} />
       <Route path='/board' element={<Board />} />
-      <Route path='/profile' element={"profile"} />
+      <Route path='/profile' element={<Profile />} />
     </Route>
   )
 )

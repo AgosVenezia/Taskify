@@ -8,11 +8,7 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(userInfo) {
-      navigate("/board")
-    } else {
-      navigate("/")
-    }
+    if(!userInfo) navigate("/")
   }, [navigate, userInfo]);
 
   return (
