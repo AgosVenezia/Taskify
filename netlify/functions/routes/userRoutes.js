@@ -1,11 +1,15 @@
 import express from 'express';
-import { registerUser, authUser, logoutUser } from '../controllers/userController.js';
+import { registerUser, deleteUser, authUser, logoutUser, updateUserProfile } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post("/", registerUser);
+router
+  .route("/")
+  .post(registerUser)
+  .delete(protect, deleteUser);
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
+router.put("/profile", protect, updateUserProfile);
 
 export default router;

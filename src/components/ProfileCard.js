@@ -1,15 +1,24 @@
 import { useState } from "react";
-import { useUserInfo } from "../context/userContext";
+import { useNavigate } from "react-router-dom";
+import { useUserInfo, useDelete } from "../context/userContext";
 import { Modal, Avatar, Dropdown, TextInput, Button } from "flowbite-react";
 import { MdDangerous } from "react-icons/md";
 
 const ConfirmationModal = ({ handleShowModal }) => {
   const [usernameConfirm, setUsernameConfirm] = useState("");
   const userInfo = useUserInfo();
+  const deleteUser = useDelete();
+
+  const navigate = useNavigate();
 
   const closeModal = () => {
     setUsernameConfirm("")
     handleShowModal(false)
+  }
+
+  const handleUserDelete = async () => {
+    await deleteUser();
+    navigate('/');
   }
 
   return (
@@ -43,7 +52,7 @@ const ConfirmationModal = ({ handleShowModal }) => {
             <Button
               color="failure"
               disabled={usernameConfirm !== userInfo.username}
-              onClick={() => console.log("Funcion de eliminar usuario...")}
+              onClick={() => handleUserDelete()}
             >
               Sí, seguro
             </Button>

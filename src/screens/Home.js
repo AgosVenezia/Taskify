@@ -1,4 +1,15 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserInfo } from "../context/userContext";
+
 export default function Home() {
+  const userInfo = useUserInfo();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(userInfo) navigate('/board')
+  }, [userInfo, navigate])
+  
   return (
     <div className="home w-full h-screen flex justify-center items-center">
       <div className="md:container md:mx-auto">

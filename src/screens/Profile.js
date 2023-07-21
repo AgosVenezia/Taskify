@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { UserContextProvider } from "../context/userContext";
 import { Card } from "flowbite-react";
 import ProfileCard from "../components/ProfileCard";
 import ProfileForm from "../components/ProfileForm";
@@ -22,10 +21,4 @@ const Profile = () => {
   );
 };
 
-export default function ProfileContextWrapper() {
-  return (
-    <UserContextProvider>
-      <Profile />
-    </UserContextProvider>
-  );
-}
+export default Profile;

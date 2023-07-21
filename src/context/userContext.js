@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const useUserContext = () => {
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('taskifyUserInfo')));
-
-  const navigate = useNavigate();
 
   const setCredentials = (credentials) => {
     if(localStorage.getItem('taskifyUserInfo')) {
@@ -14,7 +11,6 @@ const useUserContext = () => {
     };
 
     localStorage.setItem('taskifyUserInfo',  JSON.stringify(credentials));
-
     setUserInfo(credentials);
   }
 
@@ -29,8 +25,16 @@ const useUserContext = () => {
       return axios
         .post("/api/users", data)
         .then((res) => {
-          setCredentials(res.data)
-          navigate('/board')
+          setCredentials(res.data.user)
+          return res
+        })
+        .catch((err) => err);
+    },
+    delete: async () => {
+      return axios
+        .delete("/api/users")
+        .then((res) => {
+          clearCredentials()
           return res
         })
         .catch((err) => err);
@@ -39,8 +43,7 @@ const useUserContext = () => {
       return axios
         .post("/api/users/auth", data)
         .then((res) => {
-          setCredentials(res.data)
-          navigate('/board')
+          setCredentials(res.data.user)
           return res
         })
         .catch((err) => err);
@@ -50,6 +53,15 @@ const useUserContext = () => {
         .post("/api/users/logout")
         .then((res) => {
           clearCredentials()
+          return res
+        })
+        .catch((err) => err);
+    },
+    update: async (data) => {
+      return axios
+        .put("/api/users/profile", data)
+        .then((res) => {
+          setCredentials(res.data.user)
           return res
         })
         .catch((err) => err);
@@ -67,5 +79,7 @@ export const UserContextProvider = ({ children }) => (
 
 export const useUserInfo = () => useContextSelector(UserContext, (ctx) => ctx.userInfo);
 export const useRegister = () => useContextSelector(UserContext, (ctx) => ctx.register);
+export const useDelete = () => useContextSelector(UserContext, (ctx) => ctx.delete);
 export const useLogin = () => useContextSelector(UserContext, (ctx) => ctx.login);
 export const useLogout = () => useContextSelector(UserContext, (ctx) => ctx.logout);
+export const useUpdate = () => useContextSelector(UserContext, (ctx) => ctx.update);

@@ -1,16 +1,7 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useUserInfo, UserContextProvider } from "./context/userContext";
+import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 
 const App = () => {
-  const userInfo = useUserInfo();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if(!userInfo) navigate("/")
-  }, [navigate, userInfo]);
-
   return (
     <div className="App">
       <Header />
@@ -19,10 +10,4 @@ const App = () => {
   );
 }
 
-export default function UserContextWrapper() {
-  return (
-    <UserContextProvider>
-      <App />
-    </UserContextProvider>
-  )
-}
+export default App;

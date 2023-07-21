@@ -16,7 +16,6 @@ const SignInForm = ({ handleForm, handleModal }) => {
     }
 
     await loginUser(data);
-    // console.log('loginFn -> ', loginFn)
     handleModal();      
   };
 
