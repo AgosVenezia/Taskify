@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUserInfo, useUpdate } from "../context/userContext";
+import { toast } from 'react-toastify';
 import { Avatar, Button, Label, TextInput, FileInput } from "flowbite-react";
 import { MdSave, MdOutlineBackspace } from "react-icons/md";
 
@@ -28,7 +29,7 @@ const ProfileForm = ({ handleEditMode }) => {
     e.preventDefault();
     const { password, passwordConfirm } = formInfo;
     if(password !== passwordConfirm) {
-      alert("Las contraseñas no coinciden.")
+      toast.error("Las contraseñas no coinciden.")
     } else {
       await updateUser(formInfo);
       handleEditMode(false)

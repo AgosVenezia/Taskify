@@ -11,6 +11,7 @@ import {
 import TasklistForm from "./TasklistForm";
 import TaskForm from "./TaskForm";
 import Task from "./Task";
+import { toast } from "react-toastify";
 
 function Tasklist({ tasklist }) {
   const [editMode, setEditMode] = useState(false);
@@ -21,8 +22,13 @@ function Tasklist({ tasklist }) {
   const deleteTasklist = async (e) => {
     e.preventDefault();
     await axios.delete(`/api/tasklists/${tasklist._id}`)
-                .then(() => setLoading(true))
-                .catch((err) => alert("err -> ", err));
+                .then(() => {
+                  setLoading(true)
+                  toast.success("Lista de tareas eliminada")
+                })
+                .catch((err) => {
+                  toast.error(`Error: ${err}`)
+                });
   }
 
   const handleTasklistForm = () => {

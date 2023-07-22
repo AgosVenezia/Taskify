@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const useUserContext = () => {
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('taskifyUserInfo')));
@@ -19,52 +20,65 @@ const useUserContext = () => {
     localStorage.removeItem("taskifyUserInfo");
   }
 
+  const showSuccessToast = (msg) => {
+    toast.success(msg)
+  }
+
+  const showErrorToast = (err) => {
+    toast.error(err?.response?.data?.msg || err.message || err)
+  }
+
   return {
     userInfo,
     register: async (data) => {
       return axios
         .post("/api/users", data)
         .then((res) => {
+          showSuccessToast(res.data.msg)
           setCredentials(res.data.user)
           return res
         })
-        .catch((err) => err);
+        .catch((err) => showErrorToast(err));
     },
     delete: async () => {
       return axios
         .delete("/api/users")
         .then((res) => {
+          showSuccessToast(res.data.msg)
           clearCredentials()
           return res
         })
-        .catch((err) => err);
+        .catch((err) => showErrorToast(err));
     },
     login: async (data) => {
       return axios
         .post("/api/users/auth", data)
         .then((res) => {
+          showSuccessToast(res.data.msg)
           setCredentials(res.data.user)
           return res
         })
-        .catch((err) => err);
+        .catch((err) => showErrorToast(err));
     },
     logout: async () => {
       return axios
         .post("/api/users/logout")
         .then((res) => {
+          showSuccessToast(res.data.msg)
           clearCredentials()
           return res
         })
-        .catch((err) => err);
+        .catch((err) => showErrorToast(err));
     },
     update: async (data) => {
       return axios
         .put("/api/users/profile", data)
         .then((res) => {
+          showSuccessToast(res.data.msg)
           setCredentials(res.data.user)
           return res
         })
-        .catch((err) => err);
+        .catch((err) => showErrorToast(err));
     }
   };
 };

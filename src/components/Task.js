@@ -4,6 +4,7 @@ import { useSetLoading } from "../context/boardContext";
 import { Modal, Card, Badge, Button } from "flowbite-react";
 import { MdEdit, MdDeleteForever, MdDangerous } from "react-icons/md";
 import TaskForm from "./TaskForm";
+import { toast } from "react-toastify";
 
 function Task({ task, tasklistId }) {
   const [editMode, setEditMode] = useState(false);
@@ -21,8 +22,13 @@ function Task({ task, tasklistId }) {
     e.preventDefault();
     await axios
       .delete(`/api/tasks/${tasklistId}.${task._id}`)
-      .then(() => setLoading(true))
-      .catch((err) => alert("err -> ", err));
+      .then(() => {
+        setLoading(true)
+        toast.success("Tarea eliminada")
+      })
+      .catch((err) => {
+        toast.error(`Error: ${err}`)
+      });
   };
 
   function handleTaskForm() {

@@ -8,6 +8,7 @@ import {
   Button,
 } from "flowbite-react";
 import { MdSend, MdCancel } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const TaskForm = ({ task, tasklistId, handleTaskForm }) => {
   const [title, setTitle] = useState(task?.title || "");
@@ -20,8 +21,13 @@ const TaskForm = ({ task, tasklistId, handleTaskForm }) => {
   const insertTask = async () => {
     await axios.post("/api/tasks", { title, description, label, tasklistId })
       .then((res) => JSON.stringify(res.data))
-      .then(() => setLoading(true))
-      .catch((err) => alert("err -> ", err));
+      .then(() => {
+        setLoading(true)
+        toast.success("Tarea creada")
+      })
+      .catch((err) => {
+        toast.error(`Error: ${err}`)
+      });
   };
 
   const updateTask = async () => {

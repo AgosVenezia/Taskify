@@ -1,6 +1,7 @@
 import express from 'express';
 import serverless from 'serverless-http';
 import cookieParser from 'cookie-parser';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import tasklistRoutes from './routes/tasklistRoutes.js';
@@ -26,5 +27,8 @@ api.get('/api/', (req, res) => res.send('Bienvenido a la api'));
 api.use('/api/users', userRoutes);
 api.use('/api/tasklists', tasklistRoutes);
 api.use('/api/tasks', taskRoutes);
+
+api.use(notFound);
+api.use(errorHandler);
 
 export const handler = serverless(api);

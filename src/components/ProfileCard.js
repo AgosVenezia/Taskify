@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserInfo, useDelete } from "../context/userContext";
 import { Modal, Avatar, Dropdown, TextInput, Button } from "flowbite-react";
 import { MdDangerous } from "react-icons/md";
+import { FaUserEdit, FaUserSlash } from "react-icons/fa";
 
 const ConfirmationModal = ({ handleShowModal }) => {
   const [usernameConfirm, setUsernameConfirm] = useState("");
@@ -89,18 +90,20 @@ const ProfileCard = ({ handleEditMode }) => {
         <Dropdown inline label="">
           <Dropdown.Item>
             <button
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => handleEditMode(true)}
             >
-              <p>Editar</p>
+              <FaUserEdit className="mr-2"/>
+              Editar perfil
             </button>
           </Dropdown.Item>
           <Dropdown.Item>
             <button
-              className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => setShowDeleteModal(true)}
             >
-              <p>Eliminar usuario</p>
+              <FaUserSlash className="mr-2"/>
+              Eliminar usuario
             </button>
           </Dropdown.Item>
         </Dropdown>
