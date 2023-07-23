@@ -30,6 +30,9 @@ const useUserContext = () => {
 
   return {
     userInfo,
+    userInitials: () => {
+      return `${userInfo.firstName.slice(0,1)}${userInfo.lastName.slice(0,1)}`
+    },
     register: async (data) => {
       return axios
         .post("/api/users", data)
@@ -72,7 +75,11 @@ const useUserContext = () => {
     },
     update: async (data) => {
       return axios
-        .put("/api/users/profile", data)
+        .put("/api/users/profile", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+         }
+        })
         .then((res) => {
           showSuccessToast(res.data.msg)
           setCredentials(res.data.user)
@@ -92,6 +99,7 @@ export const UserContextProvider = ({ children }) => (
 )
 
 export const useUserInfo = () => useContextSelector(UserContext, (ctx) => ctx.userInfo);
+export const useUserInitials = () => useContextSelector(UserContext, (ctx) => ctx.userInitials);
 export const useRegister = () => useContextSelector(UserContext, (ctx) => ctx.register);
 export const useDelete = () => useContextSelector(UserContext, (ctx) => ctx.delete);
 export const useLogin = () => useContextSelector(UserContext, (ctx) => ctx.login);

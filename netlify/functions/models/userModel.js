@@ -24,6 +24,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      img: String,
+      thumb: String,
+      delete_url: String
+    }
   },
   {
     timestamps: true,
@@ -31,9 +36,7 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.pre('save', async function(next) {
-  if(!this.isModified('password')) {
-    next()
-  };
+  if(!this.isModified('password')) next();
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

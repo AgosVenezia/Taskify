@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserInfo, useDelete } from "../context/userContext";
+import { useUserInfo, useUserInitials, useDelete } from "../context/userContext";
 import { Modal, Avatar, Dropdown, TextInput, Button } from "flowbite-react";
 import { MdDangerous } from "react-icons/md";
 import { FaUserEdit, FaUserSlash } from "react-icons/fa";
@@ -70,6 +70,7 @@ const ConfirmationModal = ({ handleShowModal }) => {
 const ProfileCard = ({ handleEditMode }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const userInfo = useUserInfo();
+  const userInitials = useUserInitials();
 
   const handleShowModal = (value) => {
     setShowDeleteModal(value)
@@ -111,8 +112,9 @@ const ProfileCard = ({ handleEditMode }) => {
       <div className="flex flex-col items-center pb-10">
         <Avatar
           alt={`Avatar de ${userInfo.username}`}
-          className="mb-3 rounded-full shadow-lg"
-          img="https://static.wikia.nocookie.net/succession/images/d/da/Roman_Roy.png"
+          className="mb-3 rounded-full shadow-lg text-6xl"
+          img={userInfo.avatar?.thumb}
+          placeholderInitials={userInitials()}
           size="xl"
           bordered
           rounded

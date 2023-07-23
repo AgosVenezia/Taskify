@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
+import uploadAvatar from '../utils/uploadAvatar.js';
 import User from '../models/userModel.js';
 import { Tasklist } from '../models/tasklistModel.js';
 
@@ -78,6 +79,7 @@ const authUser = asyncHandler(async (req, res) => {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
+        avatar: user.avatar,
       }
     });
   } else {
@@ -111,18 +113,32 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
 
     if(req.body.password) {
-        user.password = req.body.password;
+      user.password = req.body.password;
+    }
+
+    if(req.files) {
+      const uploadedAvatar = await uploadAvatar(req.files.avatar)
+  
+      user.avatar = {
+        img: uploadedAvatar.data.image.url,
+        thumb: uploadedAvatar.data.thumb.url,
+        delete_url: uploadedAvatar.data.delete_url
+      }
+    } else if(req.body.avatar === 'false') {
+      user.avatar = {}
     }
 
     const updatedUser = await user.save();
+
     res.status(200).json({
-      msg: 'Perfil de usuario actualizado!',
+      msg: 'Perfil de usuario actualizado',
       user: {
         _id: updatedUser._id,
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
         username: updatedUser.username,
         email: updatedUser.email,
+        avatar: updatedUser.avatar
       }
     })
   } else {

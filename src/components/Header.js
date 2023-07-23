@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useUserInfo, useLogout } from '../context/userContext';
+import { useUserInfo, useUserInitials, useLogout } from '../context/userContext';
 import {
   Navbar,
   Dropdown,
@@ -15,6 +15,7 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
 
   const userInfo = useUserInfo();
+  const userInitials = useUserInitials();
   const logoutUser = useLogout();
 
   const navigate = useNavigate();
@@ -42,7 +43,8 @@ function Header() {
               label={
                 <Avatar
                   alt="Ajustes de Usuario"
-                  img="https://static.wikia.nocookie.net/succession/images/d/da/Roman_Roy.png"
+                  img={userInfo.avatar?.thumb}
+                  placeholderInitials={userInitials()}
                   rounded={true}
                 />
               }

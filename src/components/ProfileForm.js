@@ -1,21 +1,34 @@
-import { useState } from "react";
-import { useUserInfo, useUpdate } from "../context/userContext";
+import { useState, useEffect } from "react";
+import { useUserInfo, useUserInitials, useUpdate } from "../context/userContext";
 import { toast } from 'react-toastify';
 import { Avatar, Button, Label, TextInput, FileInput } from "flowbite-react";
 import { MdSave, MdOutlineBackspace } from "react-icons/md";
+import { RiCloseCircleFill } from "react-icons/ri";
 
 const ProfileForm = ({ handleEditMode }) => {
   const userInfo = useUserInfo();
+  const userInitials = useUserInitials();
+  const updateUser = useUpdate();
+
+  const [imgPreview, setImgPreview] = useState(userInfo.avatar?.thumb || "")
   const [formInfo, setFormInfo] = useState({
     firstName: userInfo.firstName,
     lastName: userInfo.lastName,
     username: userInfo.username,
     email: userInfo.email,
+    avatar: undefined,
     password: "",
     passwordConfirm: "",
   })
-
-  const updateUser = useUpdate();
+  
+  useEffect(() => {
+    if(formInfo.avatar) {
+      const imgUrl =  URL.createObjectURL(formInfo.avatar)
+      setImgPreview(imgUrl)
+    } else if (formInfo.avatar === false) {
+      setImgPreview("")
+    } 
+  }, [formInfo.avatar])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -24,40 +37,55 @@ const ProfileForm = ({ handleEditMode }) => {
       [name]: value
     }))
   }
+  
+  const handleFileSelection = (e) => {
+    setFormInfo(prevForm => ({
+      ...prevForm,
+      avatar: e.target.files ? e.target.files[0] : false
+    }))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { password, passwordConfirm } = formInfo;
+
     if(password !== passwordConfirm) {
       toast.error("Las contraseñas no coinciden.")
-    } else {
-      await updateUser(formInfo);
-      handleEditMode(false)
+      return
     }
-  }
+    
+    const updatedUser = await updateUser(formInfo);
 
+    if(updatedUser) handleEditMode(false)
+  }
+  
   return (
     <form
       className="flex max-w-md flex-col gap-4"
+      encType="multipart/form-data"
       onSubmit={(e) => handleSubmit(e)}
       onReset={() => handleEditMode(false)}
     >
       <Avatar
         alt={`Avatar de ${userInfo.username}`}
-        img="https://static.wikia.nocookie.net/succession/images/d/da/Roman_Roy.png"
+        className="text-6xl relative w-fit mx-auto"
+        img={imgPreview}
+        placeholderInitials={userInitials()}
         size="xl"
         bordered
         rounded
-      />
+      >
+        <RiCloseCircleFill className="absolute top-0 right-0 text-3xl text-red-600 cursor-pointer" onClick={handleFileSelection} />
+      </Avatar>
       <div className="max-w-md" id="fileUpload">
         <div className="mb-2 block">
           <Label
-            htmlFor="file"
+            htmlFor="avatar"
             value="Cargar imagen"
             className="text-xs text-zinc-600 uppercase font-semibold"
           />
         </div>
-        <FileInput id="file" />
+        <FileInput id="avatar" name="avatar" onChange={handleFileSelection}/>
       </div>
 
       <div>
@@ -74,7 +102,6 @@ const ProfileForm = ({ handleEditMode }) => {
           placeholder="Nombre"
           required
           type="text"
-          sizing="sm"
           value={formInfo.firstName}
           onChange={handleFormChange}
         />
@@ -93,7 +120,6 @@ const ProfileForm = ({ handleEditMode }) => {
           placeholder="Apellido"
           required
           type="text"
-          sizing="sm"
           value={formInfo.lastName}
           onChange={handleFormChange}
         />
@@ -112,7 +138,6 @@ const ProfileForm = ({ handleEditMode }) => {
           placeholder="name@flowbite.com"
           required
           type="email"
-          sizing="sm"
           value={formInfo.email}
           onChange={handleFormChange}
         />
@@ -131,7 +156,6 @@ const ProfileForm = ({ handleEditMode }) => {
           placeholder="nombredeusuario"
           required
           type="text"
-          sizing="sm"
           value={formInfo.username}
           onChange={handleFormChange}
         />
@@ -144,7 +168,7 @@ const ProfileForm = ({ handleEditMode }) => {
             className="text-xs text-zinc-600 uppercase font-semibold"
           />
         </div>
-        <TextInput id="password" name="password" type="password" sizing="sm" onChange={handleFormChange} />
+        <TextInput id="password" name="password" type="password" onChange={handleFormChange} />
       </div>
 
       <div className="mb-3">
@@ -155,7 +179,7 @@ const ProfileForm = ({ handleEditMode }) => {
             className="text-xs text-zinc-600 uppercase font-semibold"
           />
         </div>
-        <TextInput id="passwordConfirm" name="passwordConfirm" type="password" sizing="sm" onChange={handleFormChange} />
+        <TextInput id="passwordConfirm" name="passwordConfirm" type="password" onChange={handleFormChange} />
       </div>
         
       <Button.Group>
