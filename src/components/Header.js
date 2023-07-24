@@ -27,7 +27,7 @@ function Header() {
 
   return (
     <>
-      <Navbar className={`absolute w-full ${location.pathname === '/' ? "!bg-transparent" : "bg-white/50 backdrop-blur shadow"}`}>
+      <Navbar className={`fixed w-full !z-50 ${location.pathname === '/' ? "!bg-transparent" : "bg-white/50 backdrop-blur shadow"}`}>
         <Navbar.Brand>
           <img
             src="img/logorectangular.png"

@@ -4,6 +4,7 @@ import { useUserInfo, useUserInitials, useDelete } from "../context/userContext"
 import { Modal, Avatar, Dropdown, TextInput, Button } from "flowbite-react";
 import { MdDangerous } from "react-icons/md";
 import { FaUserEdit, FaUserSlash } from "react-icons/fa";
+import CustomLightbox from "./CustomLightbox";
 
 const ConfirmationModal = ({ handleShowModal }) => {
   const [usernameConfirm, setUsernameConfirm] = useState("");
@@ -69,12 +70,12 @@ const ConfirmationModal = ({ handleShowModal }) => {
 
 const ProfileCard = ({ handleEditMode }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLightbox, setShowLightbox ] = useState(false);
   const userInfo = useUserInfo();
   const userInitials = useUserInitials();
 
-  const handleShowModal = (value) => {
-    setShowDeleteModal(value)
-  } 
+  const handleShowModal = (v) => setShowDeleteModal(v)
+  const handleShowLightbox = (v) => setShowLightbox(v);
 
   return (
     <>
@@ -112,12 +113,13 @@ const ProfileCard = ({ handleEditMode }) => {
       <div className="flex flex-col items-center pb-10">
         <Avatar
           alt={`Avatar de ${userInfo.username}`}
-          className="mb-3 rounded-full shadow-lg text-6xl"
+          className="mb-3 rounded-full shadow-lg text-6xl cursor-pointer"
           img={userInfo.avatar?.thumb}
           placeholderInitials={userInitials()}
           size="xl"
           bordered
           rounded
+          onClick={() => setShowLightbox(true)}
         />
         <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
           {`${userInfo.firstName} ${userInfo.lastName}`}
@@ -129,6 +131,8 @@ const ProfileCard = ({ handleEditMode }) => {
           {userInfo.username}
         </span>
       </div>
+
+      <CustomLightbox open={showLightbox} handleShowLightbox={handleShowLightbox} avatarUrl={userInfo.avatar.img} />
     </>
   );
 };
