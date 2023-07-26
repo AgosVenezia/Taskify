@@ -1,26 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
-import './index.css';
-import App from './App';
-import Home from './screens/Home';
-import Board from './screens/Board';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import "./index.css";
+import { UserContextProvider } from "./context/userContext";
+import PrivateRoutes from "./utils/PrivateRoutes";
+import App from "./App";
+import Home from "./screens/Home";
+import Board from "./screens/Board";
+import Profile from "./screens/Profile";
+import reportWebVitals from "./reportWebVitals";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<App />}>
-      <Route index={true} path='/' element={<Home />} />
-      <Route path='/board' element={<Board />} />
-      <Route path='/profile' element={"profile"} />
+    <Route path="/" element={<App />}>
+      <Route index={true} path="/" element={<Home />} />
+      <Route path="" element={<PrivateRoutes />}>
+        <Route path="/board" element={<Board />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
     </Route>
   )
-)
+);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserContextProvider>
+      <RouterProvider router={router} />
+    </UserContextProvider>
   </React.StrictMode>
 );
 

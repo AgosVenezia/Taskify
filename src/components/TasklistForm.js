@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSetLoading } from "../context/boardContext";
 import { TextInput, Button } from "flowbite-react";
 import { MdSend, MdCancel } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const TasklistForm = ({ tasklist, handleTasklistForm }) => {
   const [title, setTitle] = useState(tasklist?.title || "");
@@ -11,9 +12,14 @@ const TasklistForm = ({ tasklist, handleTasklistForm }) => {
 
   const insertList = async () => {
     await axios.post("/api/tasklists", { title })
-      .then((res) => JSON.stringify(res.data))
-      .then(() => setLoading(true))
-      .catch((err) => alert("err -> ", err));
+      .then((res) => {
+        JSON.stringify(res.data)
+        setLoading(true)
+        toast.success("Lista de tareas creada")
+      })
+      .catch((err) => {
+        toast.error(`Error: ${err}`)
+      });
   };
 
   const updateList = async () => {
@@ -27,7 +33,7 @@ const TasklistForm = ({ tasklist, handleTasklistForm }) => {
     e.preventDefault();
 
     if (!title) {
-      alert("El título debe ser una cadena de caracteres.");
+      toast.error("El título debe ser una cadena de caracteres.");
       return;
     }
 

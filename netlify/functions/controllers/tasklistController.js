@@ -49,7 +49,7 @@ const editTasklist = asyncHandler(async (req, res) => {
       title,
       pos
     });
-    res.status(201).json({
+    res.status(200).json({
       _id: tasklist._id,
       title: tasklist.title,
       pos: tasklist.pos,

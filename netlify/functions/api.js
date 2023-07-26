@@ -1,6 +1,8 @@
 import express from 'express';
 import serverless from 'serverless-http';
 import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import tasklistRoutes from './routes/tasklistRoutes.js';
@@ -11,6 +13,7 @@ connectDB();
 
 const api = express();
 api.use(express.json());
+api.use(fileUpload());
 api.use(express.urlencoded({ extended: true }));
 api.use(cookieParser());
 
@@ -26,5 +29,8 @@ api.get('/api/', (req, res) => res.send('Bienvenido a la api'));
 api.use('/api/users', userRoutes);
 api.use('/api/tasklists', tasklistRoutes);
 api.use('/api/tasks', taskRoutes);
+
+api.use(notFound);
+api.use(errorHandler);
 
 export const handler = serverless(api);

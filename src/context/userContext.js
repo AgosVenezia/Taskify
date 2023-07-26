@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const useUserContext = () => {
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('taskifyUserInfo')));
@@ -11,7 +12,6 @@ const useUserContext = () => {
     };
 
     localStorage.setItem('taskifyUserInfo',  JSON.stringify(credentials));
-
     setUserInfo(credentials);
   }
 
@@ -20,27 +20,72 @@ const useUserContext = () => {
     localStorage.removeItem("taskifyUserInfo");
   }
 
+  const showSuccessToast = (msg) => {
+    toast.success(msg)
+  }
+
+  const showErrorToast = (err) => {
+    toast.error(err?.response?.data?.msg || err.message || err)
+  }
+
   return {
     userInfo,
+    userInitials: () => {
+      return `${userInfo.firstName.slice(0,1)}${userInfo.lastName.slice(0,1)}`
+    },
     register: async (data) => {
       return axios
         .post("/api/users", data)
-        .then((res) => res.data)
-        .then((data) => setCredentials(data))
-        .catch((err) => err);
+        .then((res) => {
+          showSuccessToast(res.data.msg)
+          setCredentials(res.data.user)
+          return res
+        })
+        .catch((err) => showErrorToast(err));
+    },
+    delete: async () => {
+      return axios
+        .delete("/api/users")
+        .then((res) => {
+          showSuccessToast(res.data.msg)
+          clearCredentials()
+          return res
+        })
+        .catch((err) => showErrorToast(err));
     },
     login: async (data) => {
       return axios
         .post("/api/users/auth", data)
-        .then((res) => res.data)
-        .then((data) => setCredentials(data))
-        .catch((err) => err);
+        .then((res) => {
+          showSuccessToast(res.data.msg)
+          setCredentials(res.data.user)
+          return res
+        })
+        .catch((err) => showErrorToast(err));
     },
     logout: async () => {
       return axios
         .post("/api/users/logout")
-        .then(() => clearCredentials())
-        .catch((err) => err);
+        .then((res) => {
+          showSuccessToast(res.data.msg)
+          clearCredentials()
+          return res
+        })
+        .catch((err) => showErrorToast(err));
+    },
+    update: async (data) => {
+      return axios
+        .put("/api/users/profile", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+         }
+        })
+        .then((res) => {
+          showSuccessToast(res.data.msg)
+          setCredentials(res.data.user)
+          return res
+        })
+        .catch((err) => showErrorToast(err));
     }
   };
 };
@@ -54,6 +99,9 @@ export const UserContextProvider = ({ children }) => (
 )
 
 export const useUserInfo = () => useContextSelector(UserContext, (ctx) => ctx.userInfo);
+export const useUserInitials = () => useContextSelector(UserContext, (ctx) => ctx.userInitials);
 export const useRegister = () => useContextSelector(UserContext, (ctx) => ctx.register);
+export const useDelete = () => useContextSelector(UserContext, (ctx) => ctx.delete);
 export const useLogin = () => useContextSelector(UserContext, (ctx) => ctx.login);
 export const useLogout = () => useContextSelector(UserContext, (ctx) => ctx.logout);
+export const useUpdate = () => useContextSelector(UserContext, (ctx) => ctx.update);

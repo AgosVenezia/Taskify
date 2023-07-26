@@ -12,7 +12,9 @@ const Board = () => {
   const tasklists = useTasklists();
 
   useEffect(() => {
-    if(loading) getTasklists()
+    if(loading) {
+      getTasklists()
+    }
   }, [loading])
 
   // Mostrar form de creacion de nueva lista
@@ -20,7 +22,7 @@ const Board = () => {
 
   if(loading) {
     return (
-      <div className="pt-32 flex items-center justify-center gap-2 w-full">
+      <div className="pt-32 flex items-center justify-center gap-2 w-full min-h-screen dark:bg-gray-900">
         <Spinner
           className="my-12"
           aria-label="Extra large Center-aligned spinner example"
@@ -31,7 +33,7 @@ const Board = () => {
   }
 
   return (
-    <div className="pt-20 flex flex-nowrap overflow-x-scroll h-screen">
+    <div className="pt-20 flex flex-nowrap overflow-x-scroll min-h-screen dark:bg-gray-900">
         {tasklists?.map((tasklist) => (
           <Tasklist key={tasklist._id} tasklist={tasklist}  />
         ))}

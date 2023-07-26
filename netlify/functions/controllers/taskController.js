@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import { Task } from '../models/taskModel';
 import { Tasklist } from '../models/tasklistModel';
-import User from '../models/userModel';
 
 // @desc    Crear nueva tarea
 // route    POST /api/tasks/
@@ -56,7 +55,7 @@ const editTask = asyncHandler(async(req, res) => {
 
     tasklist.save();
 
-    res.status(201).json({
+    res.status(200).json({
       _id: task._id,
       title: task.title,
       description: task.description,
@@ -83,7 +82,7 @@ const deleteTask = asyncHandler(async(req, res) => {
 
     await tasklist.save();
 
-    res.status(201).json({
+    res.status(200).json({
       msg: `Tarea ${task.title} eliminada.`
     })
   } catch (err) {
