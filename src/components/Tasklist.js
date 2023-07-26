@@ -103,7 +103,7 @@ function Tasklist({ tasklist }) {
                 />
               ))
             ) : (
-              <p>No hay tareas...</p>
+              <p className="text-gray-700 dark:text-gray-400">No hay tareas...</p>
             )}
           </div>
 

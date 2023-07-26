@@ -9,7 +9,7 @@ const Profile = () => {
   const handleEditMode = (v) => setEditMode(v);
 
   return (
-    <div className="pt-32 h-screen px-4">
+    <div className="pt-32 pb-12 min-h-screen px-4 dark:bg-gray-900">
       <Card className="max-w-md mx-auto">
         {editMode ? (
           <ProfileForm handleEditMode={handleEditMode} />
