@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default async function uploadAvatar(img) {
-  const data = new FormData();
+  const data = new URLSearchParams();
   data.set("key", process.env.IMGBB_KEY);
   data.append('image', img.data.toString('base64'))
 
